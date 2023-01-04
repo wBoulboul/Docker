@@ -1,0 +1,43 @@
+version: "3"
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db_data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - 3340:3306
+    volumes:
+      - ./my-db:/var/lib/mysql
+
+  nginx1:
+    depends_on:
+      - db
+    build: ./.docker
+
+
+
+  php1:
+    depends_on:
+      - nginx1
+    image: php:fpm-alpine
+    ports:
+      - "80:80"
+    restart: always
+    volumes:
+      - ./src:/var/www/html
+
+  php2:
+    depends_on:
+      - nginx2
+    build: ./.docker
+    ports:
+      - "82:80"
+    restart: always
+    volumes:
+      - ./src2:/var/www/html
