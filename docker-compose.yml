@@ -1,38 +1,58 @@
 version: "3"
 services:
-  db:
+  database:
     image: mysql:5.7
     restart: always
     environment:
       MYSQL_DATABASE: 'db'
       MYSQL_USER: 'user'
       MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      - '3340:3306'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: database
+    ports:
+      - "8004:80"
+    depends_on:
+      - database
 
   nginx1:
     image: nginx:latest
     ports:
-      - '8080:80'
+      - '8081:80'
+    depends_on:
+      - php1
     volumes:
       - ./docker/server1/configurationNginx.conf:/etc/nginx/conf.d/default.conf
+      - ./src/public:/var/www/html/public
+      - ./src/storage/logs:/var/log/nginx
 
   nginx2:
     image: nginx:latest
     ports:
       - '8082:80'
+    depends_on:
+      - php2
     volumes:
-      - ./docker/server1/configurationNginx.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/server2/configurationNginx.conf:/etc/nginx/conf.d/default.conf
+      - ./src2/public:/var/www/html/public
+      - ./src2/storage/logs:/var/log/nginx
 
   php1:
-    build: ./docker/server2
-    ports:
-      - '80:80'
-    volumes:
-      - ./src:/var/www/html
+    build:
+      context: .
+      dockerfile: docker/server1
+    depends_on:
+      - database
 
   php2:
-    build: ./docker/server2
-    ports:
-      - '82:80'
-    volumes:
-      - ./src2:/var/www/html
+    build:
+      context: .
+      dockerfile: docker/server2/Dockerfile
+    depends_on:
+      - database

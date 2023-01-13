@@ -1,7 +1,7 @@
 FROM php:8.1-fpm
 
 # Copy
-COPY ./src .
+COPY ./src2 .
 
 # Install Composer
 COPY --from=composer /usr/bin/composer /usr/bin/composer
