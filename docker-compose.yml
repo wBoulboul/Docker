@@ -46,7 +46,7 @@ services:
   php1:
     build:
       context: .
-      dockerfile: docker/server1
+      dockerfile: docker/server1/Dockerfile
     depends_on:
       - database
 
