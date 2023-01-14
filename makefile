@@ -1,16 +1,17 @@
-
+dokcom = docker compose
+dokex = $(dokcom) exec
 
 #Génération des clés Artisan
 generation:
-	docker compose exec php1 php artisan key:generate
-	docker compose exec php2 php artisan key:generate
+	$(dokex) php1 php artisan key:generate
+	$(dokex) php2 php artisan key:generate
 
 #Execution du script de Migration de la bdd
 migration:
-	docker compose exec php1 php artisan migrate:fresh --seed
-	docker compose exec php2 php artisan migrate:fresh --seed
+	$(dokex) php1 php artisan migrate:fresh --seed
+	$(dokex) php2 php artisan migrate:fresh --seed
 
 #build automatique
 build:
-	docker compose stop
-	docker compose up --build -d
+	$(dokcom) stop
+	$(dokcom) up --build -d
