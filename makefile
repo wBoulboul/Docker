@@ -17,3 +17,7 @@ build:
 	$(dokcom) up --build -d
 	make generation
 	make migration
+
+up:
+	$(dokcom) stop
+	$(dokcom) up -d
