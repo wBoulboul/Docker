@@ -15,3 +15,4 @@ migration:
 build:
 	$(dokcom) stop
 	$(dokcom) up --build -d
+	make generation
